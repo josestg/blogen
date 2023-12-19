@@ -1,16 +1,26 @@
 module Main where
 
+el :: String -> String -> String
+el tag con =
+  "<" <> tag <> ">" <> con <> "</" <> tag <> ">"
+
 html_ :: String -> String
-html_ child = "<html>" <> child <> "</html>"
+html_ = el "html"
 
 head_ :: String -> String
-head_ child = "<head>" <> child <> "</head>"
+head_ = el "head"
 
 body_ :: String -> String
-body_ child = "<body>" <> child <> "</body>"
+body_ = el "body"
 
 title_ :: String -> String
-title_ child = "<title>" <> child <> "</title>"
+title_ = el "title"
+
+p_ :: String -> String
+p_ = el "p"
+
+h1_ :: String -> String
+h1_ = el "h1"
 
 makeHtml :: String -> String -> String
 makeHtml t c =
@@ -20,4 +30,5 @@ makeHtml t c =
 main :: IO ()
 main =
   putStrLn $
-    makeHtml "The Title" "The Body"
+    makeHtml "The Title" $
+      h1_ "Heading 1"
