@@ -1,34 +1,47 @@
 module Main where
 
+-- A complete Html document.
+newtype Html = Html String
+
+-- A type for html structures such as headings and paragraphs that can go inside the tag.
+newtype Structure = Structure String
+
+-- Alias type for naming the title.
+type Title = String
+
 el :: String -> String -> String
 el tag con =
   "<" <> tag <> ">" <> con <> "</" <> tag <> ">"
 
-html_ :: String -> String
-html_ = el "html"
+h1_ :: String -> Structure
+h1_ = Structure . el "h1"
 
-head_ :: String -> String
-head_ = el "head"
+p_ :: String -> Structure
+p_ = Structure . el "p"
 
-body_ :: String -> String
-body_ = el "body"
+html_ :: Title -> Structure -> Html
+html_ t (Structure c) =
+  Html
+    ( el
+        "html"
+        ( el
+            "head"
+            (el "title" t)
+        )
+        <> el "body" c
+    )
 
-title_ :: String -> String
-title_ = el "title"
+append_ :: Structure -> Structure -> Structure
+append_ c1 c2 = Structure (unwrap c1 <> unwrap c2)
+  where
+    unwrap (Structure t) = t
 
-p_ :: String -> String
-p_ = el "p"
-
-h1_ :: String -> String
-h1_ = el "h1"
-
-makeHtml :: String -> String -> String
-makeHtml t c =
-  html_ $
-    (head_ . title_) t <> body_ c
+render :: Html -> String
+render (Html s) = s
 
 main :: IO ()
 main =
   putStrLn $
-    makeHtml "The Title" $
-      h1_ "Heading 1"
+    render $
+      html_ "My Title" $
+        append_ (p_ "Paragraph #1") (p_ "Paragraph #2")
